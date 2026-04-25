@@ -2,19 +2,12 @@
 main.py - File chạy chính của dự án Heart Disease Prediction
 
 Quy trình:
-1. Nạp dữ liệu từ data/heart_cleaned.csv
-2. Tiền xử lý (nếu cần)
+1. Nạp dữ liệu từ data/heart.csv
+2. Tiền xử lý (EDA, xử lý giá trị 0 vô lý, encoding, scaling)
 3. Chia train/test
 4. Huấn luyện các mô hình (Naive Bayes, Decision Tree)
 5. Đánh giá và so sánh kết quả
 """
-
-import numpy as np
-import pandas as pd
-
-from src.utils import train_test_split, accuracy_score, confusion_matrix
-from src.models.naive_bayes import NaiveBayes
-from src.models.decision_tree import DecisionTree
 
 
 def main():
