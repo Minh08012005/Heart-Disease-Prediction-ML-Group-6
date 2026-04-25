@@ -5,7 +5,7 @@ Các hàm trong file này được sử dụng bởi tất cả các module khá
 Mỗi hàm đều được code từ đầu (from scratch) để phục vụ mục đích học tập.
 """
 
-import numpy as np
+
 
 
 def train_test_split(X, y, test_size=0.2, random_state=42):
