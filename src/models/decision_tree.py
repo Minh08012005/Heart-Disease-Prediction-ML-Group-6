@@ -66,11 +66,12 @@ class DecisionTree:
         Returns:
         - entropy: giá trị entropy
         """
-        # TODO: Implement from scratch
         # 1. Đếm số lượng mỗi class
-        # 2. Tính tỷ lệ pᵢ
+        counts = np.bincount(y)
+        # 2. Tính tỷ lệ pᵢ (bỏ qua class không xuất hiện)
+        proportions = counts / len(y)
         # 3. Tính entropy = -Σ pᵢ * log₂(pᵢ)
-        pass
+        return -sum(p * np.log2(p) for p in proportions if p > 0)
     
     def _information_gain(self, X_column, y, threshold):
         """
@@ -86,11 +87,24 @@ class DecisionTree:
         Returns:
         - gain: information gain
         """
-        # TODO: Implement from scratch
         # 1. Chia dữ liệu thành 2 phần dựa trên threshold
+        left_mask  = X_column <= threshold
+        right_mask = ~left_mask
+        n = len(y)
+        n_left, n_right = np.sum(left_mask), np.sum(right_mask)
+
+        # Nếu một nhánh rỗng thì không split được
+        if n_left == 0 or n_right == 0:
+            return 0.0
+
         # 2. Tính entropy của parent, left, right
+        h_parent = self._entropy(y)
+        h_left   = self._entropy(y[left_mask])
+        h_right  = self._entropy(y[right_mask])
+
         # 3. Tính information gain
-        pass
+        gain = h_parent - (n_left / n) * h_left - (n_right / n) * h_right
+        return gain
     
     def _best_split(self, X, y):
         """
@@ -104,11 +118,24 @@ class DecisionTree:
         - best_feature: chỉ số feature tốt nhất
         - best_threshold: ngưỡng split tốt nhất
         """
-        # TODO: Implement from scratch
         # 1. Duyệt qua từng feature
-        # 2. Với mỗi feature, thử các threshold khác nhau
-        # 3. Chọn (feature, threshold) có IG lớn nhất
-        pass
+        best_gain      = -1
+        best_feature   = None
+        best_threshold = None
+
+        for feature_idx in range(X.shape[1]):
+            X_col = X[:, feature_idx]
+            # 2. Với mỗi feature, thử các threshold là mỗi giá trị duy nhất
+            thresholds = np.unique(X_col)
+            for threshold in thresholds:
+                gain = self._information_gain(X_col, y, threshold)
+                # 3. Chọn (feature, threshold) có IG lớn nhất
+                if gain > best_gain:
+                    best_gain      = gain
+                    best_feature   = feature_idx
+                    best_threshold = threshold
+
+        return best_feature, best_threshold
     
     def _build_tree(self, X, y, depth=0):
         """
@@ -122,11 +149,40 @@ class DecisionTree:
         Returns:
         - node: Node hiện tại
         """
-        # TODO: Implement from scratch
-        # 1. Kiểm tra điều kiện dừng (leaf node)
+        n_samples = len(y)
+        n_classes = len(np.unique(y))
+
+        # 1. Kiểm tra điều kiện dừng → tạo leaf node
+        #    a. Đạt max_depth
+        #    b. Quá ít mẫu để tiếp tục split
+        #    c. Tất cả nhãn giống nhau (pure node)
+        if (depth >= self.max_depth
+                or n_samples < self.min_samples_split
+                or n_classes == 1):
+            # Leaf: trả về nhãn xuất hiện nhiều nhất
+            leaf_value = int(np.bincount(y).argmax())
+            return Node(value=leaf_value)
+
         # 2. Tìm split tốt nhất
+        best_feature, best_threshold = self._best_split(X, y)
+
+        # Không tìm được split có ích
+        if best_feature is None:
+            return Node(value=int(np.bincount(y).argmax()))
+
         # 3. Chia dữ liệu và đệ quy xây cây con
-        pass
+        left_mask  = X[:, best_feature] <= best_threshold
+        right_mask = ~left_mask
+
+        left_child  = self._build_tree(X[left_mask],  y[left_mask],  depth + 1)
+        right_child = self._build_tree(X[right_mask], y[right_mask], depth + 1)
+
+        return Node(
+            feature   = best_feature,
+            threshold = best_threshold,
+            left      = left_child,
+            right     = right_child,
+        )
     
     def fit(self, X, y):
         """
@@ -150,11 +206,16 @@ class DecisionTree:
         Returns:
         - prediction: giá trị dự đoán
         """
-        # TODO: Implement from scratch
         # 1. Nếu là leaf node, trả về value
-        # 2. Nếu không, so sánh x[feature] với threshold
+        if node.value is not None:
+            return node.value
+
+        # 2. So sánh x[feature] với threshold
         # 3. Rẽ trái hoặc phải tùy theo kết quả
-        pass
+        if x[node.feature] <= node.threshold:
+            return self._traverse_tree(x, node.left)
+        else:
+            return self._traverse_tree(x, node.right)
     
     def predict(self, X):
         """
@@ -167,4 +228,4 @@ class DecisionTree:
         - predictions: numpy array, nhãn dự đoán
         """
         # TODO: Implement from scratch
-        pass
+        return np.array([self._traverse_tree(x, self.root) for x in X])
