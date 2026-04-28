@@ -32,6 +32,17 @@ class Node:
         self.left = left
         self.right = right
         self.value = value
+    
+    @property
+    def is_leaf(self):
+        """Kiem tra node co phai la leaf node khong."""
+        return self.value is not None
+    
+    def __repr__(self):
+        """Hien thi thong tin node khi debug."""
+        if self.is_leaf:
+            return f"Node(leaf, value={self.value})"
+        return f"Node(feature={self.feature}, threshold={self.threshold})"
 
 
 class DecisionTree:
@@ -52,6 +63,14 @@ class DecisionTree:
         self.min_samples_split = min_samples_split
         self.root = None
         self.n_classes = None
+        self.n_features_ = None  # Luu so features khi fit, dung de validate predict
+    
+    def _most_common_label(self, y):
+        """
+        Tra ve nhan xuat hien nhieu nhat trong y.
+        Dung de tao leaf node.
+        """
+        return int(np.bincount(y).argmax())
     
     def _entropy(self, y):
         """
@@ -139,40 +158,44 @@ class DecisionTree:
     
     def _build_tree(self, X, y, depth=0):
         """
-        Xây dựng cây bằng đệ quy.
+        Xay dung cay bang de quy.
         
         Parameters:
         - X: numpy array, features
         - y: numpy array, labels
-        - depth: độ sâu hiện tại
+        - depth: do sau hien tai
         
         Returns:
-        - node: Node hiện tại
+        - node: Node hien tai
         """
         n_samples = len(y)
         n_classes = len(np.unique(y))
 
-        # 1. Kiểm tra điều kiện dừng → tạo leaf node
-        #    a. Đạt max_depth
-        #    b. Quá ít mẫu để tiếp tục split
-        #    c. Tất cả nhãn giống nhau (pure node)
+        # 1. Kiem tra dieu kien dung -> tao leaf node
+        #    a. Dat max_depth
+        #    b. Qua it mau de tiep tuc split
+        #    c. Tat ca nhan giong nhau (pure node)
         if (depth >= self.max_depth
                 or n_samples < self.min_samples_split
                 or n_classes == 1):
-            # Leaf: trả về nhãn xuất hiện nhiều nhất
-            leaf_value = int(np.bincount(y).argmax())
-            return Node(value=leaf_value)
+            return Node(value=self._most_common_label(y))
 
-        # 2. Tìm split tốt nhất
+        # 2. Tim split tot nhat
         best_feature, best_threshold = self._best_split(X, y)
 
-        # Không tìm được split có ích
+        # Khong tim duoc split co ich
         if best_feature is None:
-            return Node(value=int(np.bincount(y).argmax()))
+            return Node(value=self._most_common_label(y))
 
-        # 3. Chia dữ liệu và đệ quy xây cây con
+        # 3. Chia du lieu va de quy xay cay con
         left_mask  = X[:, best_feature] <= best_threshold
         right_mask = ~left_mask
+
+        # [FIX] Bao ve truong hop split ra 1 nhanh rong
+        # Xay ra khi tat ca gia tri cua feature giong nhau
+        # -> threshold = gia tri do -> moi mau di trai, phai rong -> crash
+        if np.sum(left_mask) == 0 or np.sum(right_mask) == 0:
+            return Node(value=self._most_common_label(y))
 
         left_child  = self._build_tree(X[left_mask],  y[left_mask],  depth + 1)
         right_child = self._build_tree(X[right_mask], y[right_mask], depth + 1)
@@ -191,7 +214,19 @@ class DecisionTree:
         Parameters:
         - X: numpy array, ma trận features (n_samples, n_features)
         - y: numpy array, nhãn (n_samples,)
+        
+        Raises:
+        - ValueError: nếu X và y có số lượng mẫu khác nhau
         """
+        X = np.array(X)
+        y = np.array(y, dtype=int)
+        
+        if X.shape[0] != y.shape[0]:
+            raise ValueError(
+                f"X co {X.shape[0]} mau nhung y co {y.shape[0]} mau."
+            )
+        
+        self.n_features_ = X.shape[1]
         self.n_classes = len(np.unique(y))
         self.root = self._build_tree(X, y)
     
@@ -207,7 +242,7 @@ class DecisionTree:
         - prediction: giá trị dự đoán
         """
         # 1. Nếu là leaf node, trả về value
-        if node.value is not None:
+        if node.is_leaf:
             return node.value
 
         # 2. So sánh x[feature] với threshold
@@ -226,6 +261,20 @@ class DecisionTree:
         
         Returns:
         - predictions: numpy array, nhãn dự đoán
+        
+        Raises:
+        - RuntimeError: nếu chưa gọi fit()
         """
-        # TODO: Implement from scratch
+        if self.root is None:
+            raise RuntimeError("Chua huan luyen! Hay goi fit() truoc khi predict().")
+        
+        X = np.array(X)
+        
+        # Validate so features phai khop voi luc fit
+        if X.shape[1] != self.n_features_:
+            raise ValueError(
+                f"Fit voi {self.n_features_} features nhung predict voi {X.shape[1]} features."
+            )
+        
         return np.array([self._traverse_tree(x, self.root) for x in X])
+    
