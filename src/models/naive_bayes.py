@@ -1,25 +1,17 @@
-"""
-naive_bayes.py - Module thuật toán Naive Bayes (Gaussian)
+"""Gaussian Naive Bayes classifier (Gaussian likelihood).
 
-Tác giả: Tuân
-Mô tả: Implement Gaussian Naive Bayes từ đầu dựa trên công thức Bayes:
-    P(y|X) ∝ P(X|y) * P(y)
-    
-    Với giả định "naive": các features độc lập với nhau.
-    Sử dụng Gaussian PDF để tính likelihood: 
-    P(x_i|y) = 1/sqrt(2*pi*σ²) * exp(-(x_i-μ)²/(2σ²))
+Simple from-scratch implementation with fit/predict/predict_proba.
 """
 
 import numpy as np
 
 class NaiveBayes:
-    """
-    Gaussian Naive Bayes Classifier
-    
+    """Gaussian Naive Bayes classifier.
+
     Attributes:
-    - priors: dict, xác suất tiên nghiệm P(y) cho mỗi class
-    - means: dict, giá trị trung bình của mỗi feature cho mỗi class
-    - variances: dict, phương sai của mỗi feature cho mỗi class
+    - priors: dict mapping class -> prior probability
+    - means: dict mapping class -> feature means (1D array)
+    - variances: dict mapping class -> feature variances (1D array)
     """
     
     def __init__(self):
@@ -29,60 +21,81 @@ class NaiveBayes:
         self.classes = None
     
     def fit(self, X, y):
-        """
-        Huấn luyện mô hình Naive Bayes.
-        
-        Parameters:
-        - X: numpy array, ma trận features (n_samples, n_features)
-        - y: numpy array, nhãn (n_samples,)
-        """
-        # TODO: Implement from scratch
-        # 1. Xác định các class duy nhất
-        # 2. Tính prior P(y) cho mỗi class
-        # 3. Tính mean và variance cho mỗi feature trong mỗi class
-        pass
+        """Fit the model to data X and labels y."""
+        X = np.asarray(X)
+        y = np.asarray(y)
+        n_samples, n_features = X.shape
+
+        self.classes, counts = np.unique(y, return_counts=True)
+        self.priors = {c: counts[i] / n_samples for i, c in enumerate(self.classes)}
+
+        # means and variances per class
+        self.means = {}
+        self.variances = {}
+        for c in self.classes:
+            X_c = X[y == c]
+            self.means[c] = np.mean(X_c, axis=0)
+            # add small epsilon to variance to avoid division by zero
+            self.variances[c] = np.var(X_c, axis=0) + 1e-9
     
     def _gaussian_pdf(self, x, mean, var):
-        """
-        Tính Probability Density Function của phân phối Gaussian.
-        
-        Công thức: f(x) = 1/sqrt(2*pi*σ²) * exp(-(x-μ)²/(2σ²))
-        
-        Parameters:
-        - x: giá trị cần tính
-        - mean: giá trị trung bình μ
-        - var: phương sai σ²
-        
-        Returns:
-        - probability: xác suất P(x|y)
-        """
-        # TODO: Implement from scratch
-        pass
+        """Gaussian probability density function (per feature)."""
+        coef = 1.0 / np.sqrt(2.0 * np.pi * var)
+        exponent = - ((x - mean) ** 2) / (2.0 * var)
+        return coef * np.exp(exponent)
     
     def predict(self, X):
-        """
-        Dự đoán nhãn cho dữ liệu mới.
-        
-        Parameters:
-        - X: numpy array, ma trận features cần dự đoán
-        
-        Returns:
-        - predictions: numpy array, nhãn dự đoán
-        """
-        # TODO: Implement from scratch
-        # 1. Với mỗi sample, tính posterior log P(y|X) cho mỗi class
-        # 2. Chọn class có posterior lớn nhất
-        pass
+        """Predict class labels for samples in X."""
+        X = np.asarray(X)
+        if X.ndim == 1:
+            X = X.reshape(1, -1)
+
+        n_samples = X.shape[0]
+        predictions = []
+
+        for i in range(n_samples):
+            x = X[i]
+            class_log_posteriors = []
+            for c in self.classes:
+                log_prob = np.log(self.priors[c])
+                mean = self.means[c]
+                var = self.variances[c]
+                pdfs = self._gaussian_pdf(x, mean, var)
+                pdfs = np.maximum(pdfs, 1e-12)
+                log_prob += np.sum(np.log(pdfs))
+                class_log_posteriors.append(log_prob)
+
+            # choose class with highest log posterior
+            best_index = np.argmax(class_log_posteriors)
+            predictions.append(self.classes[best_index])
+
+        return np.array(predictions)
     
     def predict_proba(self, X):
-        """
-        Dự đoán xác suất cho mỗi class.
-        
-        Parameters:
-        - X: numpy array, ma trận features cần dự đoán
-        
-        Returns:
-        - probabilities: numpy array, xác suất cho mỗi class
-        """
-        # TODO: Implement from scratch
-        pass
+        """Return class probabilities for samples in X."""
+        X = np.asarray(X)
+        if X.ndim == 1:
+            X = X.reshape(1, -1)
+
+        n_samples = X.shape[0]
+        n_classes = len(self.classes)
+        probs = np.zeros((n_samples, n_classes))
+
+        for i in range(n_samples):
+            x = X[i]
+            log_post = np.zeros(n_classes)
+            for idx, c in enumerate(self.classes):
+                logp = np.log(self.priors[c])
+                mean = self.means[c]
+                var = self.variances[c]
+                pdfs = self._gaussian_pdf(x, mean, var)
+                pdfs = np.maximum(pdfs, 1e-12)
+                logp += np.sum(np.log(pdfs))
+                log_post[idx] = logp
+
+            # softmax in log-space for numerical stability
+            m = np.max(log_post)
+            exp_vals = np.exp(log_post - m)
+            probs[i, :] = exp_vals / np.sum(exp_vals)
+
+        return probs
