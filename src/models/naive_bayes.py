@@ -12,7 +12,6 @@ Mô tả: Implement Gaussian Naive Bayes từ đầu dựa trên công thức Ba
 
 import numpy as np
 
-
 class NaiveBayes:
     """
     Gaussian Naive Bayes Classifier

@@ -11,7 +11,6 @@ Mô tả: Implement Decision Tree từ đầu dựa trên Entropy và Informatio
     Cây được xây dựng bằng đệ quy (recursive), chọn split tốt nhất
     dựa trên Information Gain lớn nhất.
 """
-
 import numpy as np
 
 
