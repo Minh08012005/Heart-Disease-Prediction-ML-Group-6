@@ -18,7 +18,7 @@ class NaiveBayes:
         self.priors = {}
         self.means = {}
         self.variances = {}
-        self.classes = None
+        self.classes = np.array([])
     
     def fit(self, X, y):
         """Fit the model to data X and labels y."""
@@ -46,6 +46,8 @@ class NaiveBayes:
     
     def predict(self, X):
         """Predict class labels for samples in X."""
+        if len(self.classes) == 0:
+            raise ValueError("Model chưa được fit! Hãy gọi fit() trước.")
         X = np.asarray(X)
         if X.ndim == 1:
             X = X.reshape(1, -1)
@@ -73,6 +75,8 @@ class NaiveBayes:
     
     def predict_proba(self, X):
         """Return class probabilities for samples in X."""
+        if len(self.classes) == 0:
+            raise ValueError("Model chưa được fit! Hãy gọi fit() trước.")
         X = np.asarray(X)
         if X.ndim == 1:
             X = X.reshape(1, -1)
