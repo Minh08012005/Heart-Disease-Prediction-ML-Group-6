@@ -175,7 +175,7 @@ class DecisionTree:
         #    a. Dat max_depth
         #    b. Qua it mau de tiep tuc split
         #    c. Tat ca nhan giong nhau (pure node)
-        if (depth >= self.max_depth
+        if (self.max_depth is not None and depth >= self.max_depth
                 or n_samples < self.min_samples_split
                 or n_classes == 1):
             return Node(value=self._most_common_label(y))
@@ -277,4 +277,4 @@ class DecisionTree:
             )
         
         return np.array([self._traverse_tree(x, self.root) for x in X])
-    
+    

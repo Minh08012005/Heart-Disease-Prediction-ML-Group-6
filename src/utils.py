@@ -243,3 +243,52 @@ def f1_score(y_true, y_pred):
         return 0.0
     
     return 2 * (p * r) / (p + r)
+
+
+def k_fold_cross_validation(X, y, model_class, k=5, random_state=42, **model_params):
+    """
+    K-Fold Cross Validation
+    
+    Parameters:
+    - X: features
+    - y: labels
+    - model_class: class của model (VD: DecisionTree)
+    - k: số folds (mặc định 5)
+    - random_state: seed
+    - **model_params: tham số cho model (VD: max_depth=10, min_samples_split=20)
+    
+    Returns:
+    - accuracies: list accuracy của từng fold
+    """
+    np.random.seed(random_state)
+    n_samples = len(X)
+    
+    # 1. Trộn indices
+    indices = np.random.permutation(n_samples)
+    
+    # 2. Tính kích thước mỗi fold
+    fold_size = n_samples // k
+    accuracies = []
+    
+    for i in range(k):
+        # 3. Xác định indices cho test fold i
+        start = i * fold_size
+        end = (i + 1) * fold_size if i < k - 1 else n_samples
+        
+        test_idx = indices[start:end]
+        train_idx = np.concatenate([indices[:start], indices[end:]])
+        
+        # 4. Chia dữ liệu
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        
+        # 5. Train model
+        model = model_class(**model_params)
+        model.fit(X_train, y_train)
+        
+        # 6. Predict và tính accuracy
+        y_pred = model.predict(X_test)
+        acc = accuracy_score(y_test, y_pred)
+        accuracies.append(acc)
+    
+    return accuracies
