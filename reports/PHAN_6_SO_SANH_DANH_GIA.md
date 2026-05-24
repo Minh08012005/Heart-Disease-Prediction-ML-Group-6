@@ -2,18 +2,18 @@
 
 ## 6.1 Bảng so sánh các models
 
-Sau khi huấn luyện và đánh giá trên cùng bộ dữ liệu test (20% = 184 mẫu), ta thu được kết quả:
+Sau khi huấn luyện và đánh giá trên cùng bộ dữ liệu test (20% = 183 mẫu), ta thu được kết quả:
 
-| Model                     |     Accuracy     |    Precision     |      Recall      |     F1-Score     |
-| :------------------------ | :--------------: | :--------------: | :--------------: | :--------------: |
-| **Custom Decision Tree**  |      80.33%      |      86.46%      |      78.30%      |      82.18%      |
-| **Custom Naive Bayes**    | _(chờ cập nhật)_ | _(chờ cập nhật)_ | _(chờ cập nhật)_ | _(chờ cập nhật)_ |
-| **Sklearn Decision Tree** |      82.51%      |      89.36%      |      79.25%      |      84.00%      |
-| **Sklearn Naive Bayes**   | _(chờ cập nhật)_ | _(chờ cập nhật)_ | _(chờ cập nhật)_ | _(chờ cập nhật)_ |
-| **SVM**                   |      83.06%      |      87.13%      |      83.02%      |      85.02%      |
-| **KNN**                   |      85.79%      |      88.46%      |      86.79%      |      87.62%      |
-| **Random Forest**         |      85.79%      |      88.46%      |      86.79%      |      87.62%      |
-| **Logistic Regression**   |    **86.34%**    |    **90.91%**    |      84.91%      |    **87.80%**    |
+| Model                     |  Accuracy  | Precision  | Recall |  F1-Score  |
+| :------------------------ | :--------: | :--------: | :----: | :--------: |
+| **Custom Decision Tree**  |   79.78%   |   87.91%   | 75.47% |   81.22%   |
+| **Custom Naive Bayes**    |   84.70%   |   91.49%   | 81.13% |   86.00%   |
+| **Sklearn Decision Tree** |   80.87%   |   89.89%   | 75.47% |   82.05%   |
+| **Sklearn Naive Bayes**   |   84.70%   |   91.49%   | 81.13% |   86.00%   |
+| **SVM**                   |   83.06%   |   87.13%   | 83.02% |   85.02%   |
+| **KNN**                   |   85.79%   |   88.46%   | 86.79% |   87.62%   |
+| **Random Forest**         |   85.79%   |   88.46%   | 86.79% |   87.62%   |
+| **Logistic Regression**   | **86.34%** | **90.91%** | 84.91% | **87.80%** |
 
 ## 6.2 Nhận xét
 
@@ -21,12 +21,15 @@ Sau khi huấn luyện và đánh giá trên cùng bộ dữ liệu test (20% = 
 
 **Decision Tree:**
 
-- Custom DT: Accuracy 80.33% vs Sklearn DT: 82.51%
-- Chênh lệch chỉ ~2% → code tự implement hoạt động tốt
+- Custom DT: Accuracy 79.78% vs Sklearn DT: 80.87%
+- Chênh lệch chỉ ~1% → code tự implement hoạt động tốt
 - Sklearn có tối ưu thêm (pruning, split strategy) nên nhỉnh hơn
 
 **Naive Bayes:**
-_(Chờ cập nhật)_
+
+- Custom NB: Accuracy 84.70% vs Sklearn NB: 84.70% — **bằng nhau hoàn toàn!**
+- Cả hai đều đạt Precision 91.49% và Recall 81.13%
+- Code tự implement hoạt động chính xác như thư viện chuẩn
 
 ### 6.2.2 So sánh giữa các thuật toán sklearn
 
@@ -38,9 +41,11 @@ _(Chờ cập nhật)_
    - Recall cao → phát hiện được nhiều người bệnh nhất
    - **Quan trọng trong y tế**: bỏ sót người bệnh (FN) nguy hiểm hơn chẩn đoán nhầm (FP)
 
-3. **SVM (83.06%)** hoạt động tốt nhưng không nổi bật
+3. **Custom Naive Bayes (84.70%)** hoạt động tốt, ngang bằng sklearn
 
-4. **Custom Decision Tree (80.33%)** thấp nhất nhưng vẫn chấp nhận được
+4. **SVM (83.06%)** hoạt động tốt nhưng không nổi bật
+
+5. **Custom Decision Tree (79.78%)** thấp nhất nhưng vẫn chấp nhận được
 
 ### 6.2.3 Lựa chọn model tốt nhất
 
@@ -51,8 +56,9 @@ _(Chờ cập nhật)_
 | KNN                  | **86.79%** | ✅ **Tốt nhất** - Phát hiện bệnh tốt |
 | Random Forest        | **86.79%** | ✅ **Tốt nhất** - Phát hiện bệnh tốt |
 | Logistic Regression  |   84.91%   | ✅ Tốt                               |
+| Custom Naive Bayes   |   81.13%   | ✅ Tốt                               |
 | SVM                  |   83.02%   | ✅ Tốt                               |
-| Custom Decision Tree |   78.30%   | ⚠️ Chấp nhận được                    |
+| Custom Decision Tree |   75.47%   | ⚠️ Chấp nhận được                    |
 
 **Kết luận:** KNN và Random Forest là lựa chọn tốt nhất cho bài toán dự đoán bệnh tim vì có Recall cao nhất.
 

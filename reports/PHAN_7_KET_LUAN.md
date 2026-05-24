@@ -24,7 +24,9 @@ Dự án "Dự đoán bệnh tim bằng Machine Learning" đã hoàn thành vớ
    - K-Fold CV: Mean 81.94%, Std 3.94%
 
 4. **Naive Bayes (Tuân)**
-   _(Chờ cập nhật)_
+   - Implement từ đầu: Prior, Gaussian PDF, Log-Posterior
+   - Kết quả: Accuracy 84.70%, Precision 91.49%, Recall 81.13%
+   - Hoạt động chính xác ngang với thư viện sklearn
 
 5. **So sánh với sklearn (Minh)**
    - So sánh 8 models (2 custom + 6 sklearn)
@@ -37,8 +39,8 @@ Dự án "Dự đoán bệnh tim bằng Machine Learning" đã hoàn thành vớ
 | :----------------------- | :----------------------------- |
 | Dataset                  | 918 mẫu, 11 features           |
 | Preprocessing            | 15 features (6 số + 9 one-hot) |
-| Custom Decision Tree     | 80.33% Accuracy                |
-| Custom Naive Bayes       | _(chờ cập nhật)_               |
+| Custom Decision Tree     | 79.78% Accuracy                |
+| Custom Naive Bayes       | 84.70% Accuracy                |
 | Model sklearn tốt nhất   | Logistic Regression (86.34%)   |
 | Model có Recall cao nhất | KNN & Random Forest (86.79%)   |
 

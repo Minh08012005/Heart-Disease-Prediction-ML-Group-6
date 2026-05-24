@@ -143,10 +143,10 @@ def predict(self, X):
 
 **Sau tuning (max_depth=10, min_samples_split=20):**
 
-- Accuracy: 80.33%
-- Precision: 86.46%
-- Recall: 78.30%
-- F1-Score: 82.18%
+- Accuracy: 79.78%
+- Precision: 87.91%
+- Recall: 75.47%
+- F1-Score: 81.22%
 
 **K-Fold Cross Validation (k=5):**
 

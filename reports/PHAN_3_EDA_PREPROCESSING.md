@@ -2,146 +2,91 @@
 
 ## 3.1 Khám phá dữ liệu (EDA)
 
+**Exploratory Data Analysis (EDA)** là quá trình phân tích dữ liệu ban đầu nhằm hiểu rõ cấu trúc, phân phối và các mối quan hệ giữa các đặc trưng thông qua thống kê mô tả và biểu đồ trực quan. EDA đóng vai trò định hướng cho các bước tiền xử lý và xây dựng mô hình ở giai đoạn tiếp theo.
+
 ### 3.1.1 Tổng quan dữ liệu
 
 Dataset có **918 mẫu** với **11 features** (6 số + 5 phân loại) và 1 target.
 
-```python
-import pandas as pd
-df = pd.read_csv('data/heart.csv')
-print("Shape:", df.shape)  # (918, 12)
-print(df.info())
-print(df.describe())
-```
+| Chỉ tiêu               | Giá trị                 |
+| :--------------------- | :---------------------- |
+| Số mẫu                 | 918                     |
+| Số features            | 11 (6 số + 5 phân loại) |
+| Missing values         | 0                       |
+| Target: 0 (Không bệnh) | 410 (44.7%)             |
+| Target: 1 (Có bệnh)    | 508 (55.3%)             |
 
-**Kết quả:**
+**Nhận xét:** Dataset cân bằng tương đối giữa 2 class, không bị mất cân bằng nghiêm trọng.
 
-- Kích thước: 918 dòng, 12 cột (11 features + 1 target)
-- Không có giá trị thiếu (missing values)
-- Target phân bố: 410 không bệnh (44.7%) vs 508 có bệnh (55.3%)
+### 3.1.2 Phân tích theo giới tính
 
-### 3.1.2 Phân bố target
+| Giới tính | Không bệnh | Có bệnh |  Tổng   | Tỷ lệ mắc bệnh |
+| :-------- | :--------: | :-----: | :-----: | :------------: |
+| Nữ (F)    |    143     |   50    |   193   |   **25.9%**    |
+| Nam (M)   |    267     |   458   |   725   |   **63.2%**    |
+| **Tổng**  |  **410**   | **508** | **918** |   **55.3%**    |
 
-```
-HeartDisease
-0    410 (44.7%)
-1    508 (55.3%)
-```
+**Nhận xét:**
 
-Dataset có sự cân bằng tương đối giữa 2 class, không bị mất cân bằng nghiêm trọng.
+- Nam giới có nguy cơ mắc bệnh tim cao hơn đáng kể so với nữ giới (63.2% so với 25.9%), chênh lệch khoảng 2.4 lần. Điều này phù hợp với các nghiên cứu y khoa cho thấy nam giới có nguy cơ mắc bệnh tim mạch cao hơn nữ giới.
+- Mẫu dữ liệu mất cân bằng về giới tính: Nam chiếm 79% tổng số mẫu. Đây là điểm cần lưu ý vì mô hình có thể học thiên về đặc điểm của nam giới.
+- Feature Sex có khả năng phân loại tốt do sự khác biệt rõ rệt về tỷ lệ mắc bệnh giữa hai giới.
 
-### 3.1.3 Phân tích theo giới tính
+### 3.1.3 Phân tích theo loại đau ngực
 
-```
-Sex         0    1    All
-F         130   75    205
-M         280  433    713
-All       410  508    918
-```
+**Giải thích 4 loại đau ngực:**
 
-- Nam giới chiếm đa số (713/918 = 77.7%)
-- Tỷ lệ mắc bệnh ở nam: 433/713 = 60.7%
-- Tỷ lệ mắc bệnh ở nữ: 75/205 = 36.6%
-- Nam giới có nguy cơ mắc bệnh tim cao hơn nữ giới
+- **ASY (Asymptomatic)**: Không có triệu chứng — người bệnh không cảm thấy đau ngực
+- **ATA (Atypical Angina)**: Đau ngực không điển hình — triệu chứng nhẹ, không rõ ràng
+- **NAP (Non-Anginal Pain)**: Đau ngực không do tim — nguyên nhân từ cơ, xương, tiêu hóa
+- **TA (Typical Angina)**: Đau thắt ngực điển hình — triệu chứng kinh điển của bệnh tim
 
-### 3.1.4 Phân tích theo loại đau ngực
+| Loại đau ngực | Không bệnh | Có bệnh | Tổng | Tỷ lệ mắc bệnh |
+| :------------ | :--------: | :-----: | :--: | :------------: |
+| ASY           |    104     |   392   | 496  |   **79.03%**   |
+| ATA           |    149     |   24    | 173  |   **13.87%**   |
+| NAP           |    131     |   72    | 203  |   **35.47%**   |
+| TA            |     26     |   20    |  46  |   **43.48%**   |
 
-```
-ChestPainType    0    1    Tỷ lệ bệnh (%)
-ASY             83  393    82.56%
-ATA            182   64    26.02%
-NAP            131   42    24.28%
-TA              14    9    39.13%
-```
+**Nhận xét:**
 
-- **ASY (Asymptomatic)**: 82.56% mắc bệnh → nguy hiểm nhất vì không có triệu chứng
-- **ATA, NAP**: Tỷ lệ bệnh thấp (~25%)
-- Đây là feature quan trọng để phân loại
+- **ASY** có tỷ lệ mắc bệnh cao nhất (79.03%) — đây là nhóm nguy hiểm nhất vì người bệnh không có triệu chứng cảnh báo nhưng thực tế đã mắc bệnh tim.
+- **ATA** có tỷ lệ thấp nhất (13.87%) — phần lớn là người khỏe mạnh.
+- **NAP** (35.47%) và **TA** (43.48%) ở mức trung bình.
+- ChestPainType là feature quan trọng trong phân loại, đặc biệt ASY giúp nhận diện nhóm nguy cơ cao.
 
-## 3.2 Xử lý giá trị 0 vô lý
+## 3.2 Tiền xử lý dữ liệu (Preprocessing)
 
-### 3.2.1 Phát hiện
+### 3.2.1 Xử lý giá trị 0 vô lý (Data Cleaning)
 
-Kiểm tra các cột có giá trị 0 không hợp lý về mặt y học:
+Trong quá trình EDA, nhóm phát hiện các giá trị 0 không hợp lý về mặt y học:
 
-```python
-print("Cholesterol=0:", (df['Cholesterol']==0).sum())  # 172 giá trị
-print("RestingBP=0:", (df['RestingBP']==0).sum())      # 1 giá trị
-```
+| Cột         | Số giá trị 0 | Tỷ lệ | Giải thích                   |
+| :---------- | :----------: | :---: | :--------------------------- |
+| Cholesterol |     172      | 18.7% | Cholesterol không thể bằng 0 |
+| RestingBP   |      1       | 0.1%  | Huyết áp không thể bằng 0    |
 
-- **Cholesterol = 0**: 172 giá trị (18.7%) — không thể có cholesterol = 0
-- **RestingBP = 0**: 1 giá trị — huyết áp không thể bằng 0
+**Cách xử lý:**
 
-### 3.2.2 Xử lý Cholesterol = 0
+- **Cholesterol = 0**: Thay bằng median theo nhóm bệnh (có bệnh/không bệnh) để bảo toàn đặc trưng phân bố của từng nhóm.
+- **RestingBP = 0**: Thay bằng median chung.
 
-Thay bằng median của nhóm tương ứng (có bệnh/không bệnh):
+**Nhận xét:** Nhóm sử dụng median thay vì mean vì median ít bị ảnh hưởng bởi outliers, đảm bảo dữ liệu sau xử lý vẫn phản ánh đúng phân bố thực tế.
 
-```python
-median_0 = df[df['HeartDisease'] == 0]['Cholesterol'].median()
-median_1 = df[df['HeartDisease'] == 1]['Cholesterol'].median()
-
-df.loc[(df['Cholesterol'] == 0) & (df['HeartDisease'] == 0), 'Cholesterol'] = median_0
-df.loc[(df['Cholesterol'] == 0) & (df['HeartDisease'] == 1), 'Cholesterol'] = median_1
-```
-
-**Kết quả:** 172 giá trị Cholesterol=0 đã được thay thế.
-
-### 3.2.3 Xử lý RestingBP = 0
-
-Thay bằng median chung:
-
-```python
-median_bp = df['RestingBP'].median()
-df.loc[df['RestingBP'] == 0, 'RestingBP'] = median_bp
-```
-
-**Kết quả:** 1 giá trị RestingBP=0 đã được thay thế.
-
-## 3.3 Tiền xử lý (Preprocessing)
-
-### 3.3.1 Chiến lược xử lý
+### 3.2.2 Chuẩn hóa & Mã hóa (Feature Transformation)
 
 Sử dụng **ColumnTransformer** để kết hợp 2 bước:
 
-1. **StandardScaler**: Chuẩn hóa 6 cột số
-2. **OneHotEncoder**: Mã hóa 5 cột phân loại
+| Bước      | Phương pháp                  | Áp dụng cho                                              |
+| :-------- | :--------------------------- | :------------------------------------------------------- |
+| Chuẩn hóa | StandardScaler (Z-score)     | Age, RestingBP, Cholesterol, FastingBS, MaxHR, Oldpeak   |
+| Mã hóa    | OneHotEncoder (drop='first') | Sex, ChestPainType, RestingECG, ExerciseAngina, ST_Slope |
 
-### 3.3.2 StandardScaler
+**StandardScaler:** $Z = \frac{x - \mu}{\sigma}$ — biến đổi dữ liệu về phân phối chuẩn với mean=0, std=1.
 
-**Công thức:** $Z = \frac{x - \mu}{\sigma}$
+**OneHotEncoder:** Biến mỗi giá trị phân loại thành cột 0/1 riêng biệt. Ví dụ: ChestPainType có 4 giá trị (ATA, NAP, ASY, TA) → tạo 3 cột (bỏ ASY do drop='first').
 
-Biến đổi dữ liệu về phân phối chuẩn với mean=0, std=1.
-
-**Áp dụng cho:** Age, RestingBP, Cholesterol, FastingBS, MaxHR, Oldpeak
-
-### 3.3.3 OneHotEncoder
-
-Biến mỗi giá trị phân loại thành cột 0/1 riêng biệt.
-
-**Ví dụ:** ChestPainType có 4 giá trị (ATA, NAP, ASY, TA) → tạo 3 cột (bỏ ASY do drop='first')
-
-**Áp dụng cho:** Sex, ChestPainType, RestingECG, ExerciseAngina, ST_Slope
-
-### 3.3.4 Code thực hiện
-
-```python
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.compose import ColumnTransformer
-
-numeric_features = ['Age', 'RestingBP', 'Cholesterol', 'FastingBS', 'MaxHR', 'Oldpeak']
-categorical_features = ['Sex', 'ChestPainType', 'RestingECG', 'ExerciseAngina', 'ST_Slope']
-
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', StandardScaler(), numeric_features),
-        ('cat', OneHotEncoder(drop='first'), categorical_features)
-    ]
-)
-
-X_processed = preprocessor.fit_transform(X)
-```
-
-### 3.3.5 Kết quả
+### 3.2.3 Kết quả
 
 | Chỉ tiêu        | Trước xử lý        | Sau xử lý                 |
 | :-------------- | :----------------- | :------------------------ |
