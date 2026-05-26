@@ -10,6 +10,19 @@ Dự án này sử dụng **Machine Learning** để dự đoán bệnh tim từ
 
 ---
 
+## 💬 Câu Hỏi Thường Gặp
+
+**"Nếu train các thuật toán rồi thì đưa dữ liệu dự đoán vào, kết quả trực quan ở đâu?"**
+
+→ **Xem file:** `GIAI_THICH_QUY_TRINH.md` để hiểu rõ quy trình và kết quả!
+
+**Tóm tắt:**
+- ✅ Metrics & confusion matrix → Terminal (khi chạy `python main.py`)
+- ✅ Biểu đồ chi tiết → Notebooks (01_EDA, 03_Visualization, 04_Train_Evaluate)
+- ✅ Model registry → JSON & Markdown files
+
+---
+
 ## ⚠️ Lưu Ý: Models Được Generate Locally
 
 **Models KHÔNG được lưu trên GitHub!**
