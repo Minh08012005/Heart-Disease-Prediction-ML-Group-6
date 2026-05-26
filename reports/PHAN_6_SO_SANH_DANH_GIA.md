@@ -64,20 +64,21 @@ Sau khi huấn luyện và đánh giá trên cùng bộ dữ liệu test (20% = 
 
 ## 6.3 K-Fold Cross Validation
 
-Để đánh giá khách quan hơn, nhóm thực hiện K-Fold Cross Validation (k=5) trên Custom Decision Tree:
+Để đánh giá khách quan hơn, nhóm thực hiện K-Fold Cross Validation (k=5) trên Custom Decision Tree với params max_depth=10, min_samples_split=20:
 
 | Fold     |  Accuracy  |
 | :------- | :--------: |
-| Fold 1   |   78.26%   |
-| Fold 2   |   84.78%   |
-| Fold 3   |   86.41%   |
-| Fold 4   |   76.09%   |
-| Fold 5   |   84.15%   |
-| **Mean** | **81.94%** |
-| **Std**  | **3.94%**  |
+| Fold 1   |   79.78%   |
+| Fold 2   |   85.79%   |
+| Fold 3   |   80.33%   |
+| Fold 4   |   82.51%   |
+| Fold 5   |   77.42%   |
+| **Mean** | **81.17%** |
+| **Std**  | **2.82%**  |
 
 **Nhận xét:**
 
-- Accuracy trung bình 81.94%, tương đương với kết quả trên test set (80.33%)
-- Độ lệch chuẩn 3.94% → model ổn định, không bị overfitting
+- Accuracy trung bình 81.17%, tương đương với kết quả trên test set (79.78%)
+- Độ lệch chuẩn 2.82% → model ổn định, không bị overfitting
 - Kết quả đáng tin cậy vì đã được đánh giá trên 5 folds khác nhau
+- Mean và Std nhỏ → mô hình có khả năng generalization tốt

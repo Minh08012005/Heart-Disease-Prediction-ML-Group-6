@@ -20,8 +20,8 @@ Dự án "Dự đoán bệnh tim bằng Machine Learning" đã hoàn thành vớ
 3. **Decision Tree (Hiếu, Phong, Minh)**
    - Implement từ đầu: Node, Entropy, Information Gain, đệ quy xây cây
    - Tuning tham số: max_depth=10, min_samples_split=20
-   - Kết quả: Accuracy 80.33%, Precision 86.46%, Recall 78.30%
-   - K-Fold CV: Mean 81.94%, Std 3.94%
+   - Kết quả: Accuracy 79.78%, Precision 87.91%, Recall 75.47%
+   - K-Fold CV (Best params: max_depth=5, min_samples_split=2): Mean 83.12%, Std 1.43%
 
 4. **Naive Bayes (Tuân)**
    - Implement từ đầu: Prior, Gaussian PDF, Log-Posterior
@@ -39,7 +39,7 @@ Dự án "Dự đoán bệnh tim bằng Machine Learning" đã hoàn thành vớ
 | :----------------------- | :----------------------------- |
 | Dataset                  | 918 mẫu, 11 features           |
 | Preprocessing            | 15 features (6 số + 9 one-hot) |
-| Custom Decision Tree     | 79.78% Accuracy                |
+| Custom Decision Tree     | 79.78% Accuracy (max_depth=10) |
 | Custom Naive Bayes       | 84.70% Accuracy                |
 | Model sklearn tốt nhất   | Logistic Regression (86.34%)   |
 | Model có Recall cao nhất | KNN & Random Forest (86.79%)   |
@@ -50,9 +50,9 @@ Dự án "Dự đoán bệnh tim bằng Machine Learning" đã hoàn thành vớ
 
 2. **Xử lý dữ liệu là bước quan trọng nhất**: Dữ liệu sạch và được chuẩn hóa tốt quyết định phần lớn chất lượng model.
 
-3. **Tuning tham số cải thiện đáng kể**: Custom DT từ 76.50% lên 80.33% sau tuning.
+3. **Tuning tham số cải thiện đáng kể**: Custom DT với best params (max_depth=5) đạt 82.51% Accuracy, cải thiện từ 79.78% (max_depth=10).
 
-4. **K-Fold Cross Validation đánh giá khách quan**: Accuracy 81.94% ± 3.94% cho thấy model ổn định.
+4. **K-Fold Cross Validation đánh giá khách quan**: Với best params, model đạt Accuracy 83.12% ± 1.43% - cho thấy model ổn định và không overfitting.
 
 5. **Trong y tế, Recall quan trọng hơn Accuracy**: Bỏ sót người bệnh (False Negative) nguy hiểm hơn chẩn đoán nhầm (False Positive).
 

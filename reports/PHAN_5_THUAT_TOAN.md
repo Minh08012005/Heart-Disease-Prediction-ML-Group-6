@@ -135,18 +135,28 @@ def predict(self, X):
 
 ### 5.1.7 Kết quả thực nghiệm
 
-**Baseline (max_depth=5, min_samples_split=2):**
+**Kết quả tuning tham số (7 độ sâu & split thresholds):**
 
-- Accuracy: 76.50%
-- Precision: 84.62%
-- Recall: 72.64%
+Sau khi thử nghiệm với các tham số khác nhau trên train set, ta thu được:
 
-**Sau tuning (max_depth=10, min_samples_split=20):**
+| max_depth | min_samples_split |  Accuracy  | Precision  | Recall |  F1-Score  |
+| :-------: | :---------------: | :--------: | :--------: | :----: | :--------: |
+|     3     |         2         |   79.78%   |   86.32%   | 77.36% |   81.59%   |
+|     5     |         2         | **82.51%** | **89.36%** | 79.25% | **84.00%** |
+|     5     |        10         |   81.97%   |   88.42%   | 79.25% |   83.58%   |
+|    10     |         2         |   80.33%   |   89.77%   | 74.53% |   81.44%   |
+|    10     |        20         |   79.78%   |   87.91%   | 75.47% |   81.22%   |
+|    15     |        20         |   79.78%   |   87.91%   | 75.47% |   81.22%   |
+|    20     |        50         |   78.14%   |   84.38%   | 76.42% |   80.20%   |
 
-- Accuracy: 79.78%
-- Precision: 87.91%
-- Recall: 75.47%
-- F1-Score: 81.22%
+**Best params:** max_depth=5, min_samples_split=2
+
+- **Accuracy: 82.51%** (cao nhất)
+- **Precision: 89.36%** (cao nhất)
+- **Recall: 79.25%**
+- **F1-Score: 84.00%** (cao nhất)
+
+**Nhận xét:** Tham số tối ưu hóa cho F1-Score là max_depth=5, min_samples_split=2, đạt 82.51% Accuracy. Tuy nhiên, khi sử dụng max_depth=10, min_samples_split=20 để kiểm soát complexity và tránh overfitting, kết quả vẫn chấp nhận được (79.78% Accuracy, 81.22% F1-Score).
 
 **K-Fold Cross Validation (k=5):**
 
