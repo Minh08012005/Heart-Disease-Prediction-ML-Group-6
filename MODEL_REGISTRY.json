@@ -1,0 +1,71 @@
+{
+  "description": "Registry of trained models for Heart Disease Prediction",
+  "last_updated": "2026-05-26",
+  "models": [
+    {
+      "id": "decision_tree_baseline",
+      "name": "Decision Tree (Custom Implementation)",
+      "type": "decision_tree",
+      "created_date": "2026-05-26",
+      "metrics": {
+        "accuracy": 0.7978,
+        "precision": 0.8791,
+        "recall": 0.7547,
+        "f1_score": 0.8122
+      },
+      "hyperparameters": {
+        "max_depth": 10,
+        "min_samples_split": 20
+      },
+      "file": "models_output/decision_tree_*.pkl",
+      "notes": "Custom Decision Tree from scratch using Information Gain (Entropy)"
+    },
+    {
+      "id": "naive_bayes_baseline",
+      "name": "Naive Bayes (Custom Implementation)",
+      "type": "naive_bayes",
+      "created_date": "2026-05-26",
+      "metrics": {
+        "accuracy": 0.847,
+        "precision": 0.9149,
+        "recall": 0.8113,
+        "f1_score": 0.86
+      },
+      "hyperparameters": {},
+      "file": "models_output/naive_bayes_*.pkl",
+      "notes": "Custom Gaussian Naive Bayes implementation from scratch"
+    },
+    {
+      "id": "logistic_regression_best",
+      "name": "Logistic Regression (Sklearn)",
+      "type": "logistic_regression",
+      "rank": "🏆 Best Model",
+      "created_date": "2026-05-26",
+      "metrics": {
+        "accuracy": 0.8634,
+        "precision": 0.9091,
+        "recall": 0.8491,
+        "f1_score": 0.878
+      },
+      "hyperparameters": {
+        "random_state": 42,
+        "max_iter": 1000
+      },
+      "file": "models_output/logistic_regression_*.pkl",
+      "notes": "Best performing model from main.py pipeline"
+    }
+  ],
+  "test_set_info": {
+    "total_samples": 918,
+    "train_size": 735,
+    "test_size": 183,
+    "test_ratio": 0.2,
+    "random_state": 42,
+    "features": 15
+  },
+  "how_to_generate": {
+    "step1": "python main.py                          # Train all 8 models",
+    "step2": "python scripts/train.py --model decision_tree  # Train specific model",
+    "step3": "python scripts/predict.py --model 'models_output/decision_tree_*.pkl'  # Evaluate model"
+  }
+}
