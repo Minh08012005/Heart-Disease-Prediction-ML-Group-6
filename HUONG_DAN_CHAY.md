@@ -17,9 +17,23 @@ Dự án này sử dụng **Machine Learning** để dự đoán bệnh tim từ
 → **Xem file:** `GIAI_THICH_QUY_TRINH.md` để hiểu rõ quy trình và kết quả!
 
 **Tóm tắt:**
+
 - ✅ Metrics & confusion matrix → Terminal (khi chạy `python main.py`)
 - ✅ Biểu đồ chi tiết → Notebooks (01_EDA, 03_Visualization, 04_Train_Evaluate)
 - ✅ Model registry → JSON & Markdown files
+
+---
+
+**"Tại sao Decision Tree với tham số khác nhau lại cho kết quả khác nhau?"**
+
+→ **Xem file:** `THAM_SO_VA_K_FOLD.md` để hiểu về tuning tham số và K-Fold!
+
+**Tóm tắt:**
+
+- ✅ max_depth & min_samples_split là gì
+- ✅ Tại sao Naive Bayes không cần tuning
+- ✅ K-Fold Cross Validation & stability của model
+- ✅ Kết quả thực tế từ dự án
 
 ---
 
