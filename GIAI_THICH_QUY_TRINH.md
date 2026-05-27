@@ -1,6 +1,7 @@
 # 📊 Giải Thích Quy Trình Chạy & Kết Quả Trực Quan Dự Án
 
 ## 🤔 Câu Hỏi
+
 > "Nếu train các thuật toán rồi thì đưa dữ liệu dự đoán vào, nó phải đưa ra kết quả trực quan nào đấy chứ?"
 
 ---
@@ -34,8 +35,9 @@
 ```
 
 **Output Trực Quan:**
+
 ```
-Model                          Accuracy     Precision    Recall       F1          
+Model                          Accuracy     Precision    Recall       F1
 Custom Decision Tree           0.7978     0.8791     0.7547     0.8122
 Custom Naive Bayes             0.8470     0.9149     0.8113     0.8600
 ...
@@ -53,20 +55,24 @@ Confusion Matrix (Custom DT):
 **Có 3 cách hiểu:**
 
 #### **A) Test Set (Dữ Liệu Đã Có Label)**
+
 - 183 samples đã biết kết quả thực tế
 - **Dùng để:** Evaluate models (xem model dự đoán đúng/sai bao nhiêu)
 - **Hiện tại:** Dự án đã làm điều này → Output: Metrics, Confusion Matrix
 - **Ví dụ output:**
+
 ```
 Accuracy: 79.78% (dự đoán đúng 146/183 samples)
 Confusion Matrix: TN=66, FP=11, FN=26, TP=80
 ```
 
 #### **B) New Data (Dữ Liệu Mới - Chưa Biết Label)**
+
 - Bệnh nhân mới chưa biết có bệnh tim hay không
 - **Dùng để:** Dự đoán kết quả thực tế
 - **Hiện tại:** Dự án chưa làm, nhưng có script support (`scripts/predict.py`)
 - **Cách làm:** Dùng trained model để dự đoán
+
 ```python
 # Load trained model
 model = pickle.load(open('models_output/logistic_regression_*.pkl', 'rb'))
@@ -84,6 +90,7 @@ print(f"Dự đoán: {'Có bệnh tim' if prediction[0] == 1 else 'Không có b�
 ### **3️⃣ Kết Quả Trực Quan Hiện Có Ở Đâu?**
 
 #### **✅ In Terminal (Khi Chạy `python main.py`)**
+
 ```
 Bảng so sánh 8 models:
 ┌──────────────────┬──────────┬──────────┬────────┬────────┐
@@ -94,12 +101,14 @@ Bảng so sánh 8 models:
 ```
 
 #### **✅ Trong Notebooks (Visualization)**
+
 - **01_EDA.ipynb:** Histograms, distributions (phân bố dữ liệu)
 - **03_Visualization.ipynb:** Heatmaps (tương quan), boxplots
 - **04_Train_Evaluate.ipynb:** Confusion matrices, ROC curves
 - **05_Compare_Models.ipynb:** Bar charts so sánh models
 
 #### **✅ Confusion Matrix (Terminal Output)**
+
 ```
 Custom Decision Tree:
    TN: 66    FP: 11         [True Neg | False Pos]
@@ -113,6 +122,7 @@ Giải thích:
 ```
 
 #### **✅ Model Registry (JSON Format)**
+
 ```json
 {
   "models": [
@@ -122,7 +132,7 @@ Giải thích:
         "accuracy": 0.8634,
         "precision": 0.9091,
         "recall": 0.8491,
-        "f1_score": 0.8780
+        "f1_score": 0.878
       }
     }
   ]
@@ -134,6 +144,7 @@ Giải thích:
 ### **4️⃣ Tại Sao Cách Này Là Đúng?**
 
 #### **Standard ML Workflow (Cách làm chuẩn):**
+
 ```
 1. Collect Data          ✅ (heart.csv)
 2. Preprocessing         ✅ (cleaning, scaling, encoding)
@@ -146,11 +157,13 @@ Giải thích:
 ```
 
 #### **Test Set Là "Dự Đoán" Thực Tế:**
+
 - Test set = 183 samples **chưa được train model thấy**
 - Model phải dự đoán mà chưa từng gặp
 - So sánh dự đoán với thực tế → Metrics
 
 **Ví dụ:**
+
 ```
 Sample #1: Features = [45, 1, 2, 120, ...] (15 features)
 Model predict: "Có bệnh tim" (probability: 0.85)
@@ -168,17 +181,20 @@ Thực tế: "Có bệnh tim"
 ### **5️⃣ Nếu Muốn Thêm Visualization Hoàn Hảo**
 
 **Hiện tại có sẵn:**
+
 - ✅ Metrics table (terminal)
 - ✅ Confusion matrix (terminal)
 - ✅ Notebooks với biểu đồ chi tiết
 
 **Có thể thêm:**
+
 - ⚠️ ROC Curve (chỉ số hiệu suất model)
 - ⚠️ Precision-Recall Curve
 - ⚠️ Feature Importance Plot
 - ⚠️ Model Comparison Bar Chart
 
 **Cách thêm:**
+
 ```python
 # Trong main.py hoặc notebook mới
 import matplotlib.pyplot as plt
@@ -203,11 +219,13 @@ plt.show()
 ## 📋 Phản Biện Chi Tiết
 
 ### **Thành viên nói:**
+
 > "Đưa dữ liệu dự đoán vào, nó phải đưa ra kết quả trực quan nào đấy"
 
 ### **Bạn phản biện:**
 
 #### **Điểm 1: Chúng ta ĐÃ có kết quả trực quan**
+
 ```
 ✅ Bảng so sánh 8 models (terminal)
 ✅ Confusion matrix (terminal)
@@ -217,6 +235,7 @@ plt.show()
 ```
 
 #### **Điểm 2: "Dữ liệu dự đoán" là test set (183 samples)**
+
 ```
 - Đó là các dữ liệu chưa được model nhìn thấy
 - Model phải dự đoán từ từ
@@ -224,6 +243,7 @@ plt.show()
 ```
 
 #### **Điểm 3: Quy trình đang làm là Standard ML Practice**
+
 ```
 Model được train trên train set (735)
 Model được evaluate trên test set (183)
@@ -231,12 +251,14 @@ Kết quả: Metrics table, confusion matrix, performance comparison
 ```
 
 #### **Điểm 4: Nếu muốn predict trên dữ liệu mới**
+
 ```
 python scripts/predict.py --model "models_output/logistic_regression_*.pkl"
 → Output: Metrics, Confusion Matrix
 ```
 
 #### **Điểm 5: Visualization có sẵn & có thể mở rộng**
+
 ```
 Hiện tại:
 - ✅ Terminal output (metrics, confusion matrix)
@@ -274,19 +296,20 @@ Có thể thêm:
 
 ## 💡 Tóm Tắt Phản Biện
 
-| Vấn Đề | Giải Thích |
-|--------|-----------|
+| Vấn Đề                          | Giải Thích                                     |
+| ------------------------------- | ---------------------------------------------- |
 | "Phải đưa ra kết quả trực quan" | ✅ Đã có: metrics, confusion matrix, notebooks |
-| "Dữ liệu dự đoán ở đâu?" | ✅ Test set (183 samples chưa train thấy) |
-| "Kết quả ở đâu?" | ✅ Terminal, Model Registry, Notebooks |
-| "Tại sao không có biểu đồ?" | ⚠️ Có trong notebooks, có thể thêm charts |
-| "Quy trình đúng không?" | ✅ Đúng standard ML workflow |
+| "Dữ liệu dự đoán ở đâu?"        | ✅ Test set (183 samples chưa train thấy)      |
+| "Kết quả ở đâu?"                | ✅ Terminal, Model Registry, Notebooks         |
+| "Tại sao không có biểu đồ?"     | ⚠️ Có trong notebooks, có thể thêm charts      |
+| "Quy trình đúng không?"         | ✅ Đúng standard ML workflow                   |
 
 ---
 
 ## 📚 Tài Liệu Hỗ Trợ
 
 **Để bạn tham khảo khi giải thích:**
+
 - `HUONG_DAN_CHAY.md` - Hướng dẫn chạy dự án
 - `MODEL_REGISTRY.md` - Metadata & metrics
 - `notebooks/04_Train_Evaluate.ipynb` - Detailed evaluation
